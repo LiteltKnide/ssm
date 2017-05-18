@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.example.mapper.QuestionsMapper" >
+  <resultMap id="BaseResultMap" type="com.example.pojo.Questions" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="quetion_name" property="quetionName" jdbcType="VARCHAR" />
+    <result column="type" property="type" jdbcType="VARCHAR" />
+    <result column="options" property="options" jdbcType="VARCHAR" />
+    <result column="bag_id" property="bagId" jdbcType="INTEGER" />
+  </resultMap>
+  
+  <sql id="Base_Column_List" >
+    id as "id", 
+    quetion_name as "questionName", 
+    type as "type", 
+    options as "options", 
+    bag_id as "bagId"
+  </sql>
+ 
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from questions
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  
+  <select id="selectAllByBagId" resultType="com.example.pojo.Questions">
+  	select 
+  	<include refid="Base_Column_List"/>
+  	from questions 
+  	where bag_id = #{bagId}
+  </select>
+  
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from questions
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+ 
+  <insert id="insert" parameterType="com.example.pojo.Questions" >
+    insert into questions (id, quetion_name, type, 
+      options, bag_id)
+    values (#{id,jdbcType=INTEGER}, #{quetionName,jdbcType=VARCHAR}, #{type,jdbcType=VARCHAR}, 
+      #{options,jdbcType=VARCHAR}, #{bagId,jdbcType=INTEGER})
+  </insert>
+  <insert id="insertSelective" parameterType="com.example.pojo.Questions" >
+    insert into questions
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="quetionName != null" >
+        quetion_name,
+      </if>
+      <if test="type != null" >
+        type,
+      </if>
+      <if test="options != null" >
+        options,
+      </if>
+      <if test="bagId != null" >
+        bag_id,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="quetionName != null" >
+        #{quetionName,jdbcType=VARCHAR},
+      </if>
+      <if test="type != null" >
+        #{type,jdbcType=VARCHAR},
+      </if>
+      <if test="options != null" >
+        #{options,jdbcType=VARCHAR},
+      </if>
+      <if test="bagId != null" >
+        #{bagId,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  
+  <update id="updateByPrimaryKeySelective" parameterType="com.example.pojo.Questions" >
+    update questions
+    <set >
+      <if test="quetionName != null" >
+        quetion_name = #{quetionName,jdbcType=VARCHAR},
+      </if>
+      <if test="type != null" >
+        type = #{type,jdbcType=VARCHAR},
+      </if>
+      <if test="options != null" >
+        options = #{options,jdbcType=VARCHAR},
+      </if>
+      <if test="bagId != null" >
+        bag_id = #{bagId,jdbcType=INTEGER},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.example.pojo.Questions" >
+    update questions
+    set quetion_name = #{quetionName,jdbcType=VARCHAR},
+      type = #{type,jdbcType=VARCHAR},
+      options = #{options,jdbcType=VARCHAR},
+      bag_id = #{bagId,jdbcType=INTEGER}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

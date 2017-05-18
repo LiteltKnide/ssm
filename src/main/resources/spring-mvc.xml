@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-4.0.xsd
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.0.xsd">
+
+	<!-- 自动扫描的包 -->
+	<context:component-scan base-package="com.example.*"
+		use-default-filters="false">
+		<context:include-filter type="annotation"
+			expression="org.springframework.stereotype.Controller" />
+	</context:component-scan>
+
+	<!-- 视图解析器 -->
+	<bean id="viewResolver"
+		class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+		<property name="prefix" value="/WEB-INF/pages/"></property>
+		<property name="suffix" value=".jsp"></property>
+	</bean>
+
+	<!-- 会自动注册了validator ConversionService -->
+	<mvc:annotation-driven />
+
+	<mvc:default-servlet-handler />
+
+	<mvc:view-controller path="user/toLogin" view-name="user/login"/>
+	<mvc:view-controller path="user/toRegister" view-name="user/register"/>
+	<mvc:view-controller path="survey/new" view-name="survey/survey_new"/>
+	<mvc:view-controller path="bag/toAdd" view-name="bag/bag_new"/>
+	
+	<!-- 拦截器配置 -->
+	<mvc:interceptors>
+	        <!-- 配置Token拦截器，防止用户重复提交数据 -->
+<!-- 	        <mvc:interceptor> -->
+<!-- 	            <mvc:mapping path="/**"/>这个地方时你要拦截得路径 我这个意思是拦截所有得URL -->
+<!-- 	            <bean class="com.example.interceptors.TokenInterceptor"/>class文件路径改成你自己写得拦截器路径！！ -->
+<!-- 	        </mvc:interceptor> -->
+	        
+	        <mvc:interceptor>
+	       		<mvc:mapping path="/**"/>
+	        	<bean class="com.example.interceptors.LoginInterceptor"></bean>
+	        </mvc:interceptor>
+	</mvc:interceptors>
+	
+	<!-- 异常进行统一处理 -->
+	<bean id="simpleMappingExceptionResolver" class="org.springframework.web.servlet.handler.SimpleMappingExceptionResolver">
+		<property name="exceptionMappings">
+			<props>
+				<prop key="com.example.exceptions.UsernameAlreadyExistException">user/register</prop>
+				<prop key="com.example.exceptions.FileIsNotImgException">survey/survey_new</prop>
+			</props>
+		</property>
+	</bean>
+	
+	<!-- 文件上传 -->
+	<bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+		<property name="defaultEncoding" value="utf-8"></property>
+		<property name="maxUploadSize" value="5120000"></property>
+	</bean>
+	
+</beans>
